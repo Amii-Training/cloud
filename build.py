@@ -6,7 +6,7 @@ use_plugin("python.flake8")
 use_plugin("python.distutils")
 
 
-name = "flaskapp"
+name = "hospitalService"
 version = "1.0.0"
 default_task = "publish"
 

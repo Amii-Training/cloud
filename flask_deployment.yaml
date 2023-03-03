@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: flaskapp-deployment
+  name: myapp-deployment
   labels:
-    app: flaskapp-deployment
+    app: myapp-deployment
 spec:
   replicas: 1
   template:
     metadata:
-      name: flaskapp-pod
+      name: myapp-pod
       labels:
-        app: flaskapp-pod
+        app: myapp-pod
     spec:
       containers:
-        - name: myflaskapp
-          image: svathsan/flaskapp:latest
+        - name: hospitalService
+          image: svathsan/hospitalService:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 5000
   selector:
     matchLabels:
-      app: flaskapp-pod
+      app: myapp-pod

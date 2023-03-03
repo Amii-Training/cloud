@@ -1,6 +1,6 @@
-name: GitHub Actions Demo
-on: [push, workflow_dispatch]
-jobs:
+#name: GitHub Actions Demo
+#on: [push, workflow_dispatch]
+#jobs:
 #  python:
 #     name: Build and Push Python Microservice
 #     runs-on: ubuntu-latest
@@ -19,10 +19,9 @@ jobs:
 #             cd /home/runner/work/cloud/cloud/target/dist/*/dist/
 #             pip install setuptools wheel twine
 #             twine upload --repository testpypi *
-
 #  docker:
 #    name: Build and Push Docker Image
-##    needs: python
+#    needs: python
 #    runs-on: ubuntu-latest
 #    environment: docker
 #    steps:
@@ -47,25 +46,24 @@ jobs:
 #       with:
 #         context: .
 #         push: true
-#         tags: svathsan/flaskapp:latest
-
-  deploy:
-    name: Login and Deploy to AWS EKS
-    runs-on: ubuntu-latest
+#         tags: svathsan/hospitalService:latest
+#  deploy:
+#    name: Login and Deploy to AWS EKS
+#    runs-on: ubuntu-latest
 #    needs: docker
-    environment: aws
-    steps:
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-
-      - name: K8 Deployment
-        uses: kodermax/kubectl-aws-eks@master
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-        with:
-          context: .
-          args: rollout restart deployment/flaskapp-deployment
+#    environment: aws
+#    steps:
+#      - name: Configure AWS credentials
+#        uses: aws-actions/configure-aws-credentials@v1
+#        with:
+#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#          aws-region: us-east-1
+#
+#      - name: K8 Deployment
+#        uses: kodermax/kubectl-aws-eks@master
+#        env:
+#          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+#        with:
+#          context: .
+#          args: rollout restart deployment/myapp-deployment
