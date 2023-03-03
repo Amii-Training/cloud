@@ -4,7 +4,7 @@
 #  python:
 #     name: Build and Push Python Microservice
 #     runs-on: ubuntu-latest
-#     environment: docker
+#     environment: python
 #     steps:
 #         -
 #           name: Build Python Project
