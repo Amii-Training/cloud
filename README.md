@@ -132,6 +132,7 @@ Then run `docker push <docker_username>/hospital_service:1.0.0` to publish your 
 
 # Deploy the Containerized Application on AWS EKS
 
+### Create EKS Cluster
 15. Now it's time to deploy the containerized application on a Hybrid Cloud, AWS EKS. To begin with, we need to sign in to [AWS management console](https://aws.amazon.com/console/) to create an EKS cluster.
 
 16. Once signed in, search for Elastic Kubernetes Service in the search bar and then click on `Add Cluster -> Create`
@@ -146,6 +147,8 @@ It may take upto 10-15 minutes to create the cluster. Once done, the cluster sta
 
 19. Before deploying the application, we need to add nodes to the cluster. Head over to `Compute` tab and click on `Add node group`
 ![alt text](images/node_01.png)
+
+### Add Node Group to Cluster
 
 20. The name of the node group the cluster should be the same (hospitalService).
 
@@ -162,6 +165,8 @@ It may take upto 10-15 minutes to create the cluster. Once done, the cluster sta
 23. Keep the default values for Specify networking step. Once that is done, click on create to add the node group
 
 It may a few minutes to create the node group. Once created, the node group status should be Active.
+
+### Connect to EKS cluster from AWS CLI and Kubectl
 
 24. Now it's time to connect to your AWS EKS cluster. To do this we will be using AWS CLI and Kubectl command. 
 
@@ -189,6 +194,7 @@ It may a few minutes to create the node group. Once created, the node group stat
   NAME                                          STATUS   ROLES    AGE   VERSION
 ip-172-31-28-202.us-west-2.compute.internal   Ready    <none>   40m   v1.24.10-eks-48e63af
 ```
+### Create a Deployment and Expose it as a Service
 
 29. It's time to deploy your application.  
 To give some K8s context, a [Pod](https://kubernetes.io/docs/concepts/workloads/pods/) is the most basic deployable unit within a Kubernetes cluster. A Pod runs one or more containers. 
@@ -200,6 +206,8 @@ Once that is done, run `kubectl apply -f deployment.yaml` from command line to c
 
 A [Kubernetes Service](https://kubernetes.io/docs/concepts/services-networking/service/) is a method for exposing an application that is running as one or more Pods in your cluster.
 We need to create a service to access the microservice from outside the cluster. Run `kubectl apply -f services.yaml` from command line to create a service exposing the deployment that we created in the above step
+
+### Update Security Group Settings
 
 32. To access the exposed service from your computer, you need to add a security rule to allow inbound traffic to your cluster. 
 To do this, go to your cluster info page in AWS Management console and then click on the `Networking` tab.
@@ -214,6 +222,8 @@ Then click on the Cluster security group.
 
 35. Click on `Add rule` and define a new rule to allow All traffic as shown below (Type: All traffic, Source: Anywhere) and when you are done click on `Save rules`
 ![alt text](images/sg_04.png)
+
+# Build a CI/CD Pipeline
 
 36. A [CI/CD pipeline](https://about.gitlab.com/topics/ci-cd/) automates a series of steps that must be performed to deliver a software.
 We are going to build such a pipeline to automatically deploy code changes. Once you make a change in `hospitalService.py`, 
