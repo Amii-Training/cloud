@@ -4,7 +4,7 @@ WORKDIR /usr/src/app
 
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir flask
-RUN pip install -i https://test.pypi.org/simple/ hospitalService==1.0.0
+RUN pip install -i https://test.pypi.org/simple/ hospitalService-vathsan
 
 ENV FLASK_APP=hospitalService
 EXPOSE 5000
