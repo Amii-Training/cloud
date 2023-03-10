@@ -358,7 +358,7 @@ deploy:
           aws-region: #FIXME: AWS region
 ```
 
-At `line #67`, you need to provide Base64 encoded version of the Kubeconfig data file (that you created in step 27) as a secret.
+At `line #67`, you need to provide Base64 encoded version of the Kubeconfig data file (that you created in step 26) as a secret.
 Copy the contents of the file and encode to Base64 format. You may use either the command line,
 ```bash
 cat $HOME/.kube/config | base64 
