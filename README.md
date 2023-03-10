@@ -160,11 +160,12 @@ It may take upto 10-15 minutes to create the cluster. Once done, the cluster sta
 20. The name of the node group and the EKS cluster should be the same (`hospitalService`).
 Refer to the [Node IAM role user guide](https://docs.aws.amazon.com/eks/latest/userguide/create-node-role.html#create-worker-node-role) and create a role.
 
-  **Note**
-  At step 5.e, make sure to select the box left of `AmazonEC2FullAccess` policy addition to `AmazonEKSWorkerNodePolicy` and `AmazonEC2ContainerRegistryReadOnly`. 
-  Skip the instructions for AmazonEKS_CNI_Policy and adding tags under step 6.c, it's optional.
+**Note**
 
-  Once the role is created, select the role in Configure node group page and click on next
+While following the user guide, at step 5.e, make sure to select the box left of `AmazonEC2FullAccess` policy addition to `AmazonEKSWorkerNodePolicy` and `AmazonEC2ContainerRegistryReadOnly`. 
+Skip the instructions for AmazonEKS_CNI_Policy and adding tags under step 6.c, it's optional.
+
+Once the role is created, select the role in Configure node group page and click on next
 ![alt text](images/node_02.png)
 
 21. In the next page, configure the values as shown below and click on next
