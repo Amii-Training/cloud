@@ -115,12 +115,12 @@ Modify `line #8` with the correct docker syntax so that the docker daemon can do
 
 11. Install Docker by referring to https://docs.docker.com/get-docker/ 
 
-  Once installed, from the root of the project, execute `docker build -t <docker_username>/hospital_service:latest .` to [build and tag](https://docs.docker.com/engine/reference/commandline/build/) a docker image by reading the instructions from the Dockerfile
+  Once installed, from the root of the project, execute `docker build -t <docker_username>/hospital_service:1.0.0 .` to [build and tag](https://docs.docker.com/engine/reference/commandline/build/) a docker image by reading the instructions from the Dockerfile
   (replace `docker_username` with your actual docker username).
 
 12. Great job! You have built a flask based microservice and containerized it using Docker. Let's see how to run the service using the created docker image.
 
-  To run the docker image, execute `docker run -p 5000:5000 <docker_username>/hospital_service:latest` from the command line
+  To run the docker image, execute `docker run -p 5000:5000 <docker_username>/hospital_service:1.0.0` from the command line
 
   You should be able to access the service using any of following endpoints, `http://localhost:5000/doctors`, `http://localhost:5000/doctors/<speciality>`, `http://localhost:5000/hospitals/<hospital>`, where you need to replace the speciality and hospital with respective values
 
@@ -131,7 +131,7 @@ Modify `line #8` with the correct docker syntax so that the docker daemon can do
 [Docker Hub](https://hub.docker.com/) is a hosted repository service provided by Docker for finding and sharing container images.
 First run `docker login` from command line and login with your docker credentials. 
 
-After logging in, run `docker push <docker_username>/hospital_service:latest` to publish your hospital_service image to docker hub.
+After logging in, run `docker push <docker_username>/hospital_service:1.0.0` to publish your hospital_service image to docker hub.
 You can visit https://hub.docker.com/ to see your hosted docker image.
 
 # Deploy Containerized Application on AWS EKS
@@ -208,7 +208,7 @@ ip-172-31-28-202.us-west-2.compute.internal   Ready    <none>   40m   v1.24.10-e
 To give some K8s context, a [Pod](https://kubernetes.io/docs/concepts/workloads/pods/) is the most basic deployable unit within a Kubernetes cluster. A Pod runs one or more containers. 
 A [Kubernetes Deployment](https://www.vmware.com/topics/glossary/content/kubernetes-deployment.html#:~:text=A%20Kubernetes%20Deployment%20tells%20Kubernetes,earlier%20deployment%20version%20if%20necessary.) tells Kubernetes how to create or modify instances of the pods that hold a containerized application.
 
-Let's create a deployment to hold an instance of your containerized application. Open `deployment.yaml` file and modify line 18 with your docker image (e.g.: <docker_username>/hospital_service:latest)
+Let's create a deployment to hold an instance of your containerized application. Open `deployment.yaml` file and modify line 18 with your docker image (e.g.: <docker_username>/hospital_service:1.0.0)
 
 Once that is done, run `kubectl apply -f deployment.yaml` from command line to create a deployment on your AWS EKS cluster.
 You may run `kubectl get deployment` to check if the deployment is successful.
@@ -336,21 +336,11 @@ Also, makesure to update `line #50` with your docker username.
          context: .
          push: true
          #FIXME: replace <docker_username> with your docker username
-         tags: <docker_username>/hospital_service:latest
+         tags: <docker_username>/hospital_service:2.0.0
 ```
-43. To complete the last job, you need to create an environment called `aws` and need to add your AWS Access Key ID,
-AWS Secret Access Key and AWS region as secrets. Then update `lines #60-#62` in the workflow file with your secrets.
-
-At `line #67`, you need to provide Base64 encoded version of the Kubeconfig data file (that you created in step 27) as a secret.
-Copy the contents of the file and encode to Base64 format. You may use either the command line,
-```bash
-cat $HOME/.kube/config | base64 
-```
-or the [online encoder](https://www.base64encode.org/).
-
-You may refer to [this blog](https://blog.marcnuri.com/where-is-my-default-kubeconfig-file), if you have issues locating your kubeconfig file.
-
-After that create a secret (under `aws` environment) with Base64 encoded contents and refer it from your workflow file (fix `line #67`)
+43. To complete the last job, you need to create an environment called `aws` and need to add your `AWS Access Key ID` and
+`AWS Secret Access Key`. Then update `lines #60-#61` in the workflow file with your secrets. You may provide the plain text for `aws-region` at `line #62`
+```yaml
 ```yaml
 deploy:
     name: Login and Deploy to AWS EKS
@@ -364,17 +354,58 @@ deploy:
           aws-access-key-id: #FIXME: AWS Access Key ID
           aws-secret-access-key: #FIXME: AWS Secret Access Key
           aws-region: #FIXME: AWS region
+```
 
+At `line #67`, you need to provide Base64 encoded version of the Kubeconfig data file (that you created in step 27) as a secret.
+Copy the contents of the file and encode to Base64 format. You may use either the command line,
+```bash
+cat $HOME/.kube/config | base64 
+```
+or the [online encoder](https://www.base64encode.org/).
+
+You may refer to [this blog](https://blog.marcnuri.com/where-is-my-default-kubeconfig-file), if you have issues locating your kubeconfig file.
+
+After that create a secret (under `aws` environment) with Base64 encoded contents and refer it from your workflow file (fix `line #67`). 
+Also, update `line #71` with your docker username.
+```yaml
       - name: K8 Deployment
         uses: kodermax/kubectl-aws-eks@master
         env:
           KUBE_CONFIG_DATA: #FIXME: add Kube config data file
         with:
           context: .
-          args: rollout restart deployment/myapp-deployment
+          #FIXME: update with your docker username
+          args: set image deployment/myapp-deployment hospital-service=<docker_username>/hospital_service:2.0.0
 ```
 
 44. Great Job! You've completed the CI/CD pipeline. Let's modify your code and see if the pipeline works.
+
+* Open `hospitalService.py` file and update the speciality to `Paediatric` (at line #7)
+* Update the version to 2.0.0 in `build.py` file
+```
+name = "hospitalService_<your_name>"
+version = "2.0.0"
+default_task = "publish"
+```
+
+After your changes, simply commit all the modified files (`hospitalService.py`, `build.py`, `actions.yaml`) to your GitHub repository. The GitHub actions should take care of the rest of the steps.
+You can go to your GitHub repository and Click on `Actions` tab to check if the jobs have completed. It everything works fine, the pipeline status should be Success.
 ![alt text](images/actions.png)
 
-
+45. Now invoke the `http://<your_public_ip>:30008/doctors/Paediatric` URL to see the updated response
+```json
+[
+    {
+        "hospital": "Green Country Community Hospital",
+        "id": 1,
+        "name": "Jeremy Willey",
+        "speciality": "Paediatric"
+    },
+    {
+        "hospital": "Little River Hospital",
+        "id": 3,
+        "name": "Pearl Cruce",
+        "speciality": "Paediatric"
+    }
+]
+```

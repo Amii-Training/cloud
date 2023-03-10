@@ -66,4 +66,4 @@ jobs:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
         with:
           context: .
-          args: rollout restart deployment/myapp-deployment
+          args: set image deployment/myapp-deployment hospital-service=svathsan/hospital_service:2.0.0
