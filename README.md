@@ -101,7 +101,7 @@ To build the application run `pyb` from the root of your project. This generates
   From here, execute `twine upload --repository testpypi *` from command line to upload your distributions to TestPyPI using twine. Use the following when prompted for credentials,
 
     - username: __token__
-    - password: apitoken obtained in step 4
+    - password: apitoken obtained in step 8
 
   You can see if your package has been successfully uploaded by navigating to the URL https://test.pypi.org/project/hospitalService-<your_name>/
 
@@ -194,7 +194,8 @@ It may a few minutes to create the node group. Once created, the node group stat
   * Default output format [None]: << keep it to default, press enter >>
 
 26. Once installed create a kubeconfig file for your cluster by following the steps 1-3 at https://aws.amazon.com/premiumsupport/knowledge-center/eks-cluster-connection/
-    Hint for step 3,
+
+    Hints for step 3,
   * cluster_name: hospitalService
   * region: << your aws region >>
 
