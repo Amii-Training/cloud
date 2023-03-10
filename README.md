@@ -141,14 +141,13 @@ You can visit https://hub.docker.com/ to see your hosted docker image.
 It automatically manages the availability and scalability of the kubernetes cluster. 
 
 To begin with, we need to sign in to [AWS management console](https://aws.amazon.com/console/) to create an EKS cluster.
-
-17. After signing in, search for Elastic Kubernetes Service in the search bar and then click on `Add Cluster -> Create`
+16. After signing in, search for Elastic Kubernetes Service in the search bar and then click on `Add Cluster -> Create`
  ![alt text](images/cluster_01.png)
 
-18. Name the cluster as `hospitalService`. Create a new cluster service role by referring to the [EKS user guide](https://docs.aws.amazon.com/eks/latest/userguide/service_IAM_role.html#create-service-role). Once done, select the defined role and click on next
+17. Name the cluster as `hospitalService`. Create a new cluster service role by referring to the [EKS user guide](https://docs.aws.amazon.com/eks/latest/userguide/service_IAM_role.html#create-service-role). Once done, select the defined role and click on next
 ![alt text](images/cluster_02.png)
 
-19. Keep the `default` values for rest of the steps (Specify Networking, Configure Logging, Select add-ons, Configure selected add-ons setting) and click on `next`. At the final step (Review and Create) keep everything to `default` and click on `create`
+18. Keep the `default` values for rest of the steps (Specify Networking, Configure Logging, Select add-ons, Configure selected add-ons setting) and click on `next`. At the final step (Review and Create) keep everything to `default` and click on `create`
 
 It may take upto 10-15 minutes to create the cluster. Once done, the cluster status should be Active.
 
