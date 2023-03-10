@@ -94,7 +94,7 @@ Refer to https://packaging.python.org/en/latest/guides/using-testpypi/ and regis
 9. Now it's time to build and publish your application to Test Python Package Index. 
     
 To publish projects to PyPI repository, the project name must be unique. Refer to https://test.pypi.org/help/#project-name for more details.
-Therefore, modify line 9 in `build.py` file to have a unique name (e.g: hospitalService_<your_name>)
+Therefore, modify `line #9` in `build.py` file to have a unique name (e.g: hospitalService_<your_name>)
 
 To build the application run `pyb` from the root of your project. This generates the `target/dist` directory. Navigate to `target/dist/hospitalService_<your_name>-1.0.0/dist` to see the generated binary wheel and gzip’ed tar. 
   
@@ -111,16 +111,16 @@ To build the application run `pyb` from the root of your project. This generates
 
 This section guides you to containerize your application. A Dockerfile with related configurations is already available in the root of the project. You may refer to https://docs.docker.com/engine/reference/builder/ to learn more about the syntax.
 
-Modify line 8 with the correct docker syntax so that the docker daemon can download and install your application from Python Package Index (hint: use pip)
+Modify `line #8` with the correct docker syntax so that the docker daemon can download and install your application from Python Package Index (hint: use pip)
 
 11. Install Docker by referring to https://docs.docker.com/get-docker/ 
 
-  Once installed, from the root of the project, execute `docker build -t <docker_username>/hospital_service:1.0.0 .` to [build and tag](https://docs.docker.com/engine/reference/commandline/build/) a docker image by reading the instructions from the Dockerfile
+  Once installed, from the root of the project, execute `docker build -t <docker_username>/hospital_service:latest .` to [build and tag](https://docs.docker.com/engine/reference/commandline/build/) a docker image by reading the instructions from the Dockerfile
   (replace `docker_username` with your actual docker username).
 
 12. Great job! You have built a flask based microservice and containerized it using Docker. Let's see how to run the service using the created docker image.
 
-  To run the docker image, execute `docker run -p 5000:5000 <docker_username>/hospital_service:1.0.0` from the command line
+  To run the docker image, execute `docker run -p 5000:5000 <docker_username>/hospital_service:latest` from the command line
 
   You should be able to access the service using any of following endpoints, `http://localhost:5000/doctors`, `http://localhost:5000/doctors/<speciality>`, `http://localhost:5000/hospitals/<hospital>`, where you need to replace the speciality and hospital with respective values
 
@@ -131,7 +131,7 @@ Modify line 8 with the correct docker syntax so that the docker daemon can downl
 [Docker Hub](https://hub.docker.com/) is a hosted repository service provided by Docker for finding and sharing container images.
 First run `docker login` from command line and login with your docker credentials. 
 
-After logging in, run `docker push <docker_username>/hospital_service:1.0.0` to publish your hospital_service image to docker hub.
+After logging in, run `docker push <docker_username>/hospital_service:latest` to publish your hospital_service image to docker hub.
 You can visit https://hub.docker.com/ to see your hosted docker image.
 
 # Deploy Containerized Application on AWS EKS
@@ -208,7 +208,7 @@ ip-172-31-28-202.us-west-2.compute.internal   Ready    <none>   40m   v1.24.10-e
 To give some K8s context, a [Pod](https://kubernetes.io/docs/concepts/workloads/pods/) is the most basic deployable unit within a Kubernetes cluster. A Pod runs one or more containers. 
 A [Kubernetes Deployment](https://www.vmware.com/topics/glossary/content/kubernetes-deployment.html#:~:text=A%20Kubernetes%20Deployment%20tells%20Kubernetes,earlier%20deployment%20version%20if%20necessary.) tells Kubernetes how to create or modify instances of the pods that hold a containerized application.
 
-Let's create a deployment to hold an instance of your containerized application. Open `deployment.yaml` file and modify line 18 with your docker image (e.g.: <docker_username>/hospital_service:1.0.0)
+Let's create a deployment to hold an instance of your containerized application. Open `deployment.yaml` file and modify line 18 with your docker image (e.g.: <docker_username>/hospital_service:latest)
 
 Once that is done, run `kubectl apply -f deployment.yaml` from command line to create a deployment on your AWS EKS cluster.
 You may run `kubectl get deployment` to check if the deployment is successful.
@@ -270,9 +270,111 @@ You will be building such a pipeline to automatically deploy code changes. Once 
 the pipeline will take care of the rest of the steps that we did in the previous sections, from building the python application to deploying it on the AWS EKS.
 
 There are many tools to build CI/CD pipelines. For this lab we will be using [GitHub Actions](https://github.com/features/actions).
-To begin with, [Create a GitHub repository](https://docs.github.com/en/get-started/quickstart/create-a-repo) and [commit](https://docs.github.com/en/repositories/working-with-files/managing-files/adding-a-file-to-a-repository) all of your project files.
+To begin with, [Create a GitHub repository](https://docs.github.com/en/get-started/quickstart/create-a-repo) with the name `cloud` and 
+[commit](https://docs.github.com/en/repositories/working-with-files/managing-files/adding-a-file-to-a-repository) all of your project files.
 
-41. 
+41. A GitHub workflow file is given (located in `.github/workflows/actions.yml`) with the necessary steps to build a CI/CD pipeline.
 
+Makesure to name the repository as `cloud` in the above step, otherwise you need additional changes in `actions.yml` file, which will not be covered in this lab.
+
+
+The workflow file consists of 3 jobs: The first job (named python), builds the microservice and pushes it to the PyPI repository. Second job (named docker), 
+is responsible for building a docker image with the microservice and pushing it to docker repository. The last job (named deploy) deploys the container on AWS EKS cluster.
+
+### Creating secrets
+41. Now, it is time to get the first job (named python) working
+
+Refer to https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-an-environment
+and create an environment called `python`. Add two secrets called `PyPI_USERNAME` and `PYPI_API_TOKEN` to your environment with their respective values.
+The following file snippet shows how the secrets are referred to from the workflow file,
+```yaml
+jobs:
+  python:
+     name: Build and Push Python Microservice
+     runs-on: ubuntu-latest
+     environment: python
+     steps:
+         -
+           name: Build Python Project
+           uses: pybuilder/build@master
+
+         - name: Publish
+           env:
+             TWINE_USERNAME: ${{ secrets.PyPI_USERNAME }}
+             TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+```
+
+42. Similarly, create an environment called `docker` and add your docker credentials (username and password).
+Once that is done, you need to update the file (`lines #41, #42`) accordingly (hint: refer to the above step).
+Also, makesure to update `line #50` with your docker username.
+```yaml
+  docker:
+    name: Build and Push Docker Image
+    needs: python
+    runs-on: ubuntu-latest
+    environment: docker
+    steps:
+     -
+       name: Checkout
+       uses: actions/checkout@v3
+     -
+       name: Set up QEMU
+       uses: docker/setup-qemu-action@v2
+     -
+       name: Set up Docker Buildx
+       uses: docker/setup-buildx-action@v2
+     -
+       name: Login to Docker Hub
+       uses: docker/login-action@v2
+       with:
+         username: #FIXME: docker username
+         password: #FIXME: docker password
+     -
+       name: Build and push
+       uses: docker/build-push-action@v4
+       with:
+         context: .
+         push: true
+         #FIXME: replace <docker_username> with your docker username
+         tags: <docker_username>/hospital_service:latest
+```
+43. To complete the last job, you need to create an environment called `aws` and need to add your AWS Access Key ID,
+AWS Secret Access Key and AWS region as secrets. Then update `lines #60-#62` in the workflow file with your secrets.
+
+At `line #67`, you need to provide Base64 encoded version of the Kubeconfig data file (that you created in step 27) as a secret.
+Copy the contents of the file and encode to Base64 format. You may use either the command line,
+```bash
+cat $HOME/.kube/config | base64 
+```
+or the [online encoder](https://www.base64encode.org/).
+
+You may refer to [this blog](https://blog.marcnuri.com/where-is-my-default-kubeconfig-file), if you have issues locating your kubeconfig file.
+
+After that create a secret (under `aws` environment) with Base64 encoded contents and refer it from your workflow file (fix `line #67`)
+```yaml
+deploy:
+    name: Login and Deploy to AWS EKS
+    runs-on: ubuntu-latest
+    needs: docker
+    environment: aws
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: #FIXME: AWS Access Key ID
+          aws-secret-access-key: #FIXME: AWS Secret Access Key
+          aws-region: #FIXME: AWS region
+
+      - name: K8 Deployment
+        uses: kodermax/kubectl-aws-eks@master
+        env:
+          KUBE_CONFIG_DATA: #FIXME: add Kube config data file
+        with:
+          context: .
+          args: rollout restart deployment/myapp-deployment
+```
+
+44. Great Job! You've completed the CI/CD pipeline. Let's modify your code and see if the pipeline works.
+![alt text](images/actions.png)
 
 
