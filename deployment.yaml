@@ -13,8 +13,8 @@ spec:
         app: myapp-pod
     spec:
       containers:
-        - name: hospitalService
-          image: svathsan/hospitalService:latest
+        - name: hospital-service
+          image: svathsan/hospital_service:1.0.0
           imagePullPolicy: Always
           ports:
             - containerPort: 5000
