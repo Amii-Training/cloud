@@ -208,7 +208,7 @@ ip-172-31-28-202.us-west-2.compute.internal   Ready    <none>   40m   v1.24.10-e
 To give some K8s context, a [Pod](https://kubernetes.io/docs/concepts/workloads/pods/) is the most basic deployable unit within a Kubernetes cluster. A Pod runs one or more containers. 
 A [Kubernetes Deployment](https://www.vmware.com/topics/glossary/content/kubernetes-deployment.html#:~:text=A%20Kubernetes%20Deployment%20tells%20Kubernetes,earlier%20deployment%20version%20if%20necessary.) tells Kubernetes how to create or modify instances of the pods that hold a containerized application.
 
-Let's create a deployment to hold an instance of your containerized application. Open `deployment.yaml` file and modify line 18 with your docker image (e.g.: <docker_username>/hospital_service:1.0.0)
+Let's create a deployment to hold an instance of your containerized application. Open `deployment.yaml` file and modify `line #18` with your docker image (e.g.: <docker_username>/hospital_service:1.0.0)
 
 Once that is done, run `kubectl apply -f deployment.yaml` from command line to create a deployment on your AWS EKS cluster.
 You may run `kubectl get deployment` to check if the deployment is successful.
@@ -340,7 +340,7 @@ Also, makesure to update `line #50` with your docker username.
 ```
 43. To complete the last job, you need to create an environment called `aws` and need to add your `AWS Access Key ID` and
 `AWS Secret Access Key`. Then update `lines #60-#61` in the workflow file with your secrets. You may provide the plain text for `aws-region` at `line #62`
-```yaml
+
 ```yaml
 deploy:
     name: Login and Deploy to AWS EKS
