@@ -141,6 +141,7 @@ You can visit https://hub.docker.com/ to see your hosted docker image.
 It automatically manages the availability and scalability of the kubernetes cluster. 
 
 To begin with, we need to sign in to [AWS management console](https://aws.amazon.com/console/) to create an EKS cluster.
+
 16. After signing in, search for Elastic Kubernetes Service in the search bar and then click on `Add Cluster -> Create`
  ![alt text](images/cluster_01.png)
 
