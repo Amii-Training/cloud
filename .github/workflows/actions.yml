@@ -15,7 +15,6 @@ jobs:
              TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
              TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
            run: |
-             # Update these lines if you change the repository name
              ls /home/runner/work/cloud/cloud/target/dist/
              cd /home/runner/work/cloud/cloud/target/dist/*/dist/
              pip install setuptools wheel twine
