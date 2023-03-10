@@ -380,7 +380,7 @@ Also, update `line #71` with your docker username.
           args: set image deployment/myapp-deployment hospital-service=<docker_username>/hospital_service:2.0.0
 ```
 
-42. Great Job! You've completed the CI/CD pipeline. Let's modify your code and see if the pipeline works.
+42. Great Job! You've completed the CI/CD pipeline. Let's modify your code so that we can verify if the pipeline works.
 
 * Open `hospitalService.py` file and update the speciality to `Paediatric` (at line #7)
 * Update the version to 2.0.0 in `build.py` file
