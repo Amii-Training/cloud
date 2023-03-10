@@ -177,14 +177,14 @@ It may a few minutes to create the node group. Once created, the node group stat
 
 ### Connect to EKS cluster from AWS CLI and Kubectl
 
-24. Now it's time to connect to your AWS EKS cluster (from your computer). To do this we will be using AWS CLI and Kubectl command. 
+23. Now it's time to connect to your AWS EKS cluster (from your computer). To do this we will be using AWS CLI and Kubectl command. 
 
   * Install AWS CLI: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
   * Install Kubectl: https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html
 
-25. Once installed, follow the instructions at https://docs.aws.amazon.com/powershell/latest/userguide/pstools-appendix-sign-up.html and create an AWS access key ID and secret access key
+24. Once installed, follow the instructions at https://docs.aws.amazon.com/powershell/latest/userguide/pstools-appendix-sign-up.html and create an AWS access key ID and secret access key
 
-26. From the command line execute `aws configure` and use the following values to configure AWS credentials for the CLI
+25. From the command line execute `aws configure` and use the following values to configure AWS credentials for the CLI
 
   * AWS Access Key ID [None]: << your access key >>
   * AWS Secret Access Key [None]: << your secret access key >>
@@ -193,19 +193,19 @@ It may a few minutes to create the node group. Once created, the node group stat
       example: https://us-west-2.console.aws.amazon.com/eks/home?region=us-west-2#/clusters, here the region is `us-west-2`
   * Default output format [None]: << keep it to default, press enter >>
 
-27. Once installed create a kubeconfig file for your cluster by following the steps 1-3 at https://aws.amazon.com/premiumsupport/knowledge-center/eks-cluster-connection/
+26. Once installed create a kubeconfig file for your cluster by following the steps 1-3 at https://aws.amazon.com/premiumsupport/knowledge-center/eks-cluster-connection/
     Hint for step 3,
   * cluster_name: hospitalService
   * region: << your aws region >>
 
-28. Test your configuration by executing `kubectl get nodes` from command line. Example output:
+27. Test your configuration by executing `kubectl get nodes` from command line. Example output:
   ```
   NAME                                          STATUS   ROLES    AGE   VERSION
 ip-172-31-28-202.us-west-2.compute.internal   Ready    <none>   40m   v1.24.10-eks-48e63af
 ```
 ### Create a Deployment and Expose it as a Service
 
-29. It's time to deploy your application.  
+28. It's time to deploy your application.  
 To give some K8s context, a [Pod](https://kubernetes.io/docs/concepts/workloads/pods/) is the most basic deployable unit within a Kubernetes cluster. A Pod runs one or more containers. 
 A [Kubernetes Deployment](https://www.vmware.com/topics/glossary/content/kubernetes-deployment.html#:~:text=A%20Kubernetes%20Deployment%20tells%20Kubernetes,earlier%20deployment%20version%20if%20necessary.) tells Kubernetes how to create or modify instances of the pods that hold a containerized application.
 
@@ -231,33 +231,33 @@ myapp-service   NodePort    10.100.188.157   <none>        5000:30008/TCP   62s
 
 ### Update Security Group Settings
 
-32. To access the exposed service from your computer, you need to add a security rule to allow inbound traffic to your cluster. 
+29. To access the exposed service from your computer, you need to add a security rule to allow inbound traffic to your cluster. 
 To do this, go to your cluster info page in AWS Management console and then click on the `Networking` tab.
 Then click on the Cluster security group. 
 ![alt text](images/sg_01.png)
 
-33. It should take you to Security Groups page. Here, click on the Security group ID
+30. It should take you to Security Groups page. Here, click on the Security group ID
 ![alt text](images/sg_02.png)
 
-34. This should show the details of the security group. From here, click on `Edit Inbound Rules` to add a new security rule
+31. This should show the details of the security group. From here, click on `Edit Inbound Rules` to add a new security rule
 ![alt text](images/sg_03.png)
 
-35. Click on `Add rule` and define a new rule to allow All traffic as shown below (Type: All traffic, Source: Anywhere IPv4) and when you are done click on `Save rules`
+32. Click on `Add rule` and define a new rule to allow All traffic as shown below (Type: All traffic, Source: Anywhere IPv4) and when you are done click on `Save rules`
 ![alt text](images/sg_04.png)
 
 ### Get Public IP
 
-36. Now that you have defined a security rule to allow inbound traffic, the only remaining step is to get the instance's IP address.
+33. Now that you have defined a security rule to allow inbound traffic, the only remaining step is to get the instance's IP address.
 To do that, go to your `Cluster info` page in management console. Click on `Networking -> Node name`
 ![alt text](images/ip_01.png)
 
-37. From the node info page, click on your `instance`
+34. From the node info page, click on your `instance`
 ![alt text](images/ip_02.png)
 
-38. This should take you to a summary page. Make note of your instance's IP address
+35. This should take you to a summary page. Make note of your instance's IP address
 ![alt text](images/ip_03.png)
 
-39. Whooh! That's a lot of work. To access the service, send GET requests (as you did in step 6 and 12) to the service URLs, replacing `localhost` with your `Public IP`,
+36. Whooh! That's a lot of work. To access the service, send GET requests (as you did in step 6 and 12) to the service URLs, replacing `localhost` with your `Public IP`,
 and updating the port number to `30008`
 
     Example: `http://34.222.204.114:30008/doctors`
@@ -266,7 +266,7 @@ and updating the port number to `30008`
 
 # Build a CI/CD Pipeline
 
-40. A [CI/CD pipeline](https://about.gitlab.com/topics/ci-cd/) automates a series of steps that must be performed to deliver a software.
+37. A [CI/CD pipeline](https://about.gitlab.com/topics/ci-cd/) automates a series of steps that must be performed to deliver a software.
 You will be building such a pipeline to automatically deploy code changes. Once you make a change in `hospitalService.py`, 
 the pipeline will take care of the rest of the steps that we did in the previous sections, from building the python application to deploying it on the AWS EKS.
 
@@ -274,7 +274,7 @@ There are many tools to build CI/CD pipelines. For this lab we will be using [Gi
 To begin with, [Create a GitHub repository](https://docs.github.com/en/get-started/quickstart/create-a-repo) with the name `cloud` and 
 [commit](https://docs.github.com/en/repositories/working-with-files/managing-files/adding-a-file-to-a-repository) all of your project files.
 
-41. A GitHub workflow file is given (located in `.github/workflows/actions.yml`) with the necessary steps to build a CI/CD pipeline.
+38. A GitHub workflow file is given (located in `.github/workflows/actions.yml`) with the necessary steps to build a CI/CD pipeline.
 
 Makesure to name the repository as `cloud` in the above step, otherwise you need additional changes in `actions.yml` file, which will not be covered in this lab.
 
@@ -283,7 +283,7 @@ The workflow file consists of 3 jobs: The first job (named python), builds the m
 is responsible for building a docker image with the microservice and pushing it to docker repository. The last job (named deploy) deploys the container on AWS EKS cluster.
 
 ### Creating secrets
-41. Now, it is time to get the first job (named python) working
+39. Now, it is time to get the first job (named python) working
 
 Refer to https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-an-environment
 and create an environment called `python`. Add two secrets called `PyPI_USERNAME` and `PYPI_API_TOKEN` to your environment with their respective values.
@@ -305,7 +305,7 @@ jobs:
              TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
 ```
 
-42. Similarly, create an environment called `docker` and add your docker credentials (username and password).
+40. Similarly, create an environment called `docker` and add your docker credentials (username and password).
 Once that is done, you need to update the file (`lines #41, #42`) accordingly (hint: refer to the above step).
 Also, makesure to update `line #50` with your docker username.
 ```yaml
@@ -339,7 +339,7 @@ Also, makesure to update `line #50` with your docker username.
          #FIXME: replace <docker_username> with your docker username
          tags: <docker_username>/hospital_service:2.0.0
 ```
-43. To complete the last job, you need to create an environment called `aws` and need to add your `AWS Access Key ID` and
+41. To complete the last job, you need to create an environment called `aws` and need to add your `AWS Access Key ID` and
 `AWS Secret Access Key`. Then update `lines #60-#61` in the workflow file with your secrets. You may provide the plain text for `aws-region` at `line #62`
 
 ```yaml
@@ -379,7 +379,7 @@ Also, update `line #71` with your docker username.
           args: set image deployment/myapp-deployment hospital-service=<docker_username>/hospital_service:2.0.0
 ```
 
-44. Great Job! You've completed the CI/CD pipeline. Let's modify your code and see if the pipeline works.
+42. Great Job! You've completed the CI/CD pipeline. Let's modify your code and see if the pipeline works.
 
 * Open `hospitalService.py` file and update the speciality to `Paediatric` (at line #7)
 * Update the version to 2.0.0 in `build.py` file
@@ -393,7 +393,7 @@ After your changes, simply commit all the modified files (`hospitalService.py`, 
 You can go to your GitHub repository and Click on `Actions` tab to check if the jobs have completed. It everything works fine, the pipeline status should be Success.
 ![alt text](images/actions.png)
 
-45. Now invoke the `http://<your_public_ip>:30008/doctors/Paediatric` URL to see the updated response
+43. Now invoke the `http://<your_public_ip>:30008/doctors/Paediatric` URL to see the updated response
 ```json
 [
     {
